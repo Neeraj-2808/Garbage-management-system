@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="h-full pb-16 overflow-y-auto">
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="container px-6 mx-auto grid">
+            <h2 class="my-6 text-2xl font-semibold text-green-500">
+                Register
+            </h2>
+
+            <div class="px-4 py-3 mb-8 bg-[#f5f5f5] rounded-lg shadow-md">
+                <label class="block text-sm">
+                    <span class="text-gray-700">Name</span><span class="text-red-600">*</span>
+                    {{ form.name }}
+                </label>
+
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Email</span><span class="text-red-600">*</span>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <span class="text-xs text-red-600">{{ form.email.errors }}</span>
+                    {% endif %}
+                </label>
+
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Contact Number</span><span class="text-red-600">*</span>
+                    {{ form.contact }}
+                </label>
+
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Address</span><span class="text-red-600">*</span>
+                    {{ form.address }}
+                </label>
+
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Post Office</span><span class="text-red-600">*</span>
+                    {{ form.post_office }}
+                </label>
+
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">District</span>
+                    {{ form.district }}
+                </label>
+
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Pincode</span><span class="text-red-600">*</span>
+                    {{ form.pin_code }}
+                    {% if form.pincode.errors %}
+                    <span class="text-xs text-red-600">{{ form.pincode.errors }}</span>
+                    {% endif %}
+                </label>
+
+                <div class="flex justify-end mt-6">
+                    <button type="submit"
+                        class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                        Register
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</main>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Page Container with Background -->
+<!-- Page Container with Background -->
+<div class="relative min-h-screen bg-cover bg-center bg-no-repeat px-6 py-6" style="background-image: url('/static/img/gb3.jpg');">
+
+  <!-- Light Foggy Overlay -->
+  <div class="absolute inset-0 bg-white opacity-20 z-0"></div>
+
+  <!-- Actual Content -->
+  <div class="relative z-10">
+
+    <!-- Stats Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <!-- Garbage Collected Today -->
+      <div class="bg-white p-4 rounded-xl shadow-md flex flex-col items-center text-center">
+        <i class="bi bi-trash text-green-700 text-5xl mb-2"></i>
+        <h3 class="text-lg font-semibold">Garbage Collected Today</h3>
+        <p class="text-3xl font-bold text-green-600 mt-2">1,220 kg</p>
+      </div>
+
+      <!-- Active Trucks -->
+      <div class="bg-white p-4 rounded-xl shadow-md flex flex-col items-center text-center">
+        <i class="fas fa-truck text-green-700 text-5xl mb-2"></i>
+        <h3 class="text-lg font-semibold">Active Trucks</h3>
+        <p class="text-3xl font-bold text-green-600 mt-2">18</p>
+      </div>
+
+      <!-- Citizen Complaints -->
+      <div class="bg-white p-4 rounded-xl shadow-md flex flex-col items-center text-center">
+        <img src="/static/img/cmpf.png" alt="Complaint Logo" class="w-16 h-16 mb-2">
+        <h3 class="text-lg font-semibold">Citizen Complaints</h3>
+        <p class="text-3xl font-bold text-green-600 mt-2">45</p>
+      </div>
+    </div>
+
+    <!-- Full Width Map Card -->
+    <div class="bg-white p-6 rounded-xl shadow-md w-full">
+      <h3 class="text-2xl font-bold mb-4 flex items-center">
+        <i class="fas fa-map-marker-alt text-green-600 mr-3"></i> City Coverage Map
+      </h3>
+      <iframe
+        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCrS8DBA5it0WRjF81bUcoaDAYTz8j46EI&q=Luminar+Technolab"
+        class="w-full h-[300px] rounded-lg border-0"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+    {%if status %}
+
+    <p>{{status}}</p>
+    
+    {%else%}
+    <form id="myForm" action="{%url 'status'%}" method="POST">
+      {%csrf_token%}
+      <label for="status">Choose an option:</label>
+      <select id="mySelect" name="status">
+        <option value="Approve">Approve</option>
+        <option value="Reject">Reject</option>
+      </select>
+    </form>
+    {%endif%}
+    
+    <script>
+      document.getElementById("mySelect").addEventListener("change", function() {
+        document.getElementById("myForm").submit();
+      });
+    </script>
+
+
+    <!-- Optional Stretched Image After Map -->
+
+</div> <!-- End of page container -->
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Heading -->
+<div class="mb-8 text-center">
+  <h1 class="text-3xl font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
+    <i class="fas fa-chart-line"></i> Reports
+  </h1>
+  <p class="text-muted mt-2">View and analyze the reports for the system's performance and operations.</p>
+</div>
+
+<!-- Reports Overview Section -->
+<div class="flex flex-col lg:flex-row lg:space-x-8 space-y-8 lg:space-y-0">
+  
+  <!-- Report Card 1 -->
+  <div class="w-full lg:w-1/3">
+    <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+      <h3 class="text-xl font-semibold text-green-600">Garbage Collection Report</h3>
+      <p class="text-muted">View the details of garbage collection trends and performance.</p>
+      <a href="#" class="btn w-full text-center">View Report</a>
+    </div>
+  </div>
+
+  <!-- Report Card 2 -->
+  <div class="w-full lg:w-1/3">
+    <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+      <h3 class="text-xl font-semibold text-green-600">Truck Utilization Report</h3>
+      <p class="text-muted">Monitor the truck's utilization and efficiency over time.</p>
+      <a href="#" class="btn w-full text-center">View Report</a>
+    </div>
+  </div>
+
+  <!-- Report Card 3 -->
+  <div class="w-full lg:w-1/3">
+    <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+      <h3 class="text-xl font-semibold text-green-600">Driver Performance Report</h3>
+      <p class="text-muted">Track the performance metrics of each driver.</p>
+      <a href="#" class="btn w-full text-center">View Report</a>
+    </div>
+  </div>
+  
+</div>
+
+<!-- Additional Insights Section -->
+<div class="mt-8 bg-white shadow-lg rounded-lg p-6">
+  <h3 class="text-xl font-semibold text-green-600">Additional Insights</h3>
+  <p class="text-muted mt-2">Explore insights based on the data collected from the operations. These reports will help in further optimizing the system.</p>
+  <a href="#" class="btn mt-4 w-full text-center">View Detailed Insights</a>
+</div>
+
+{% endblock %}

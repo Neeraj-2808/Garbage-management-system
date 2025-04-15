@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">Registered Drivers</h1>
+
+  <!-- ✅ Add Driver Button -->
+  <div class="py-4">
+    <a href="{% url 'driver-add' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow text-sm">
+      + Register New Driver
+    </a>
+  </div>
+
+  {% if drivers %}
+    <ul class="grid gap-4 md:grid-cols-2">
+      {% for driver in drivers %}
+        <li class="bg-white/50 dark:bg-gray-800/50 backdrop-blur p-4 rounded shadow">
+          <p><strong>Name:</strong> {{ driver.name }}</p>
+          <p><strong>License Number:</strong> {{ driver.license_number }}</p>
+          <p><strong>Email:</strong> {{ driver.email }}</p>
+          <p><strong>Contact:</strong> {{ driver.contact }}</p>
+          <p><strong>Address:</strong> {{ driver.address }}</p>
+
+          <!-- Action Buttons -->
+          <div class="mt-4 flex space-x-2">
+            <a href="{% url 'driver-update' driver.uuid %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded text-sm">
+              Update
+            </a>
+            <a href="{% url 'driver-delete' driver.uuid %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm">
+              Delete
+            </a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-600">No drivers registered yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% url 'driver-delete' driver.uuid %}

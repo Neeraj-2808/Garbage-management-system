@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Heading -->
+<div class="mb-8 text-center">
+  <h1 class="text-3xl font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
+    <i class="fas fa-images"></i> Gallery
+  </h1>
+  <p class="text-muted mt-2">Browse through the images collected for the Garbage Management System.</p>
+</div>
+
+<!-- Gallery Section -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <!-- Image Card 1 -->
+  <div class="relative group">
+    <img src="https://media.istockphoto.com/id/484191529/photo/one-street-at-a-time.jpg?s=612x612&w=0&k=20&c=80Sp3B91QQ6XBQVPCLND0zGeAf0x_LlTMkQuHpoFNq8=" alt="Garbage Collection Image 1" class="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105">
+    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+      <a href="https://via.placeholder.com/800x600" class="text-white text-2xl"><i class="fas fa-search-plus"></i></a>
+    </div>
+  </div>
+
+  <!-- Image Card 2 -->
+  <div class="relative group">
+    <img src="https://media.istockphoto.com/id/1410016214/photo/garbage-removal-man-doing-trash.jpg?s=612x612&w=0&k=20&c=Im2rg6vs_A-FWNg_XXatDjKQoJommfBJhnn8zPXZ368=" alt="Garbage Collection Image 2" class="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105">
+    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+      <a href="https://via.placeholder.com/800x600" class="text-white text-2xl"><i class="fas fa-search-plus"></i></a>
+    </div>
+  </div>
+
+  <!-- Image Card 3 -->
+  <div class="relative group">
+    <img src="https://westernelite.com/wp-content/uploads/2022/04/historytrash-Large-1080x675.jpeg" alt="Garbage Collection Image 3" class="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105">
+    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+      <a href="http://127.0.0.1:8000/garbage/dashboard/" class="text-white text-2xl"><i class="fas fa-search-plus"></i></a>
+    </div>
+  </div>
+
+  <!-- Image Card 4 -->
+  <div class="relative group">
+    <img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/0*bB31wcohp7pePk9C.jpg" alt="Garbage Collection Image 4" class="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105">
+    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+      <a href="https://via.placeholder.com/800x600" class="text-white text-2xl"><i class="fas fa-search-plus"></i></a>
+    </div>
+  </div>
+
+  <!-- Image Card 5 -->
+  <div class="relative group">
+    <img src="https://media.istockphoto.com/id/1288137858/photo/a-woman-sweeping-the-streets.jpg?s=612x612&w=0&k=20&c=zhQNOo55VxNyra8o_YMyUVb8goLZz0-SIUYEuqo1B-c=" alt="Garbage Collection Image 5" class="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105">
+    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+      <a href="https://via.placeholder.com/800x600" class="text-white text-2xl"><i class="fas fa-search-plus"></i></a>
+    </div>
+  </div>
+
+  <!-- Image Card 6 -->
+  <div class="relative group">
+    <img src="https://media.istockphoto.com/id/172416573/photo/waste-management-4.jpg?s=612x612&w=0&k=20&c=leTA0enadvrbZlMhj-NXHUxziu-UUgJ7JEqc_TBgIJU=" alt="Garbage Collection Image 6" class="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105">
+    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+      <a href="https://via.placeholder.com/800x600" class="text-white text-2xl"><i class="fas fa-search-plus"></i></a>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

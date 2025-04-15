@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Light/Dark Mode Internal CSS -->
+<style>
+  .settings-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .dark-mode .settings-card {
+    background-color: #2d3748;
+    border-color: #4a5568;
+  }
+
+  .theme-toggle {
+    background-color: #e5e7eb;
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  .dark-mode .theme-toggle {
+    background-color: #4b5563;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+  }
+
+  .field-label {
+    font-weight: 500;
+  }
+
+  .text-muted {
+    color: #6b7280;
+  }
+
+  .dark-mode .text-muted {
+    color: #d1d5db;
+  }
+
+  .profile-info p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+  }
+</style>
+
+<!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<div class="mx-auto px-4 py-8">
+  <!-- Page Heading -->
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
+      <i class="fas fa-sliders-h"></i> Settings
+    </h1>
+    <p class="text-muted mt-2">Customize your experience and manage your profile.</p>
+  </div>
+
+  <!-- Theme Toggle Button -->
+  <div class="text-right mb-6">
+    <button id="theme-toggle" class="theme-toggle">
+      <i id="theme-icon" class="fas fa-moon"></i>
+    </button>
+  </div>
+
+  <!-- Settings Card -->
+  <div class="settings-card bg-white max-w-2xl mx-auto space-y-8">
+    <!-- User Profile Section -->
+    <div class="profile-info">
+      <h2 class="section-title text-green-600">Profile</h2>
+      <p class="text-muted"><span class="field-label ">Username:</span> {{ request.user.username }}</p>
+      <p class="text-muted"><span class="field-label">Role:</span> {{ request.user.role }}</p>
+    </div>
+
+    <!-- Technical Placeholder -->
+    <div>
+      <h2 class="section-title text-green-600">Technical Settings</h2>
+      <p class="text-muted">More configuration options coming soon.</p>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Theme Toggle -->
+<script>
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const body = document.body;
+
+  // Load saved theme on page load
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    themeIcon.classList.replace('fa-moon', 'fa-sun');
+  } else {
+    body.classList.add('light-mode');
+  }
+
+  themeToggleBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    body.classList.toggle('light-mode');
+
+    if (body.classList.contains('dark-mode')) {
+      localStorage.setItem('theme', 'dark');
+      themeIcon.classList.replace('fa-moon', 'fa-sun');
+    } else {
+      localStorage.setItem('theme', 'light');
+      themeIcon.classList.replace('fa-sun', 'fa-moon');
+    }
+  });
+</script>
+
+{% endblock %}
