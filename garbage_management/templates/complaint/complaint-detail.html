@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow rounded">
+    <h2 class="text-2xl font-bold mb-4">{{ complaint.title }}</h2>
+
+    <p><strong>Customer:</strong> {{ complaint.customer }}</p>
+
+    <p class="mt-2"><strong>Description:</strong><br>{{ complaint.description }}</p>
+
+    {% if complaint.suggestion %}
+        <p class="mt-2"><strong>Suggestion:</strong><br>{{ complaint.suggestion }}</p>
+    {% endif %}
+
+    <a href="{% url 'complaint' %}" class="mt-4 inline-block text-green-600 hover:underline">← Back to list</a>
+</div>
+{% endblock %}

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'trucks',
     'driver',
     'payment',
+    'complaints',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'authentication.show_user.show_user_name',
+                'authentication.show_customer.show_customer_name',
             ],
         },
     },

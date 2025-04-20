@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{%load check_roles%}
+<main class="h-full p-6 overflow-y-auto">
+  <div class="container mx-auto">
+    <h2 class="text-2xl font-semibold text-green-600 mb-4">Garbage List</h2>
+
+    <table class="w-full text-left table-auto bg-white shadow-md rounded-lg">
+      <thead>
+        <tr class="bg-green-100 text-gray-700">
+          <th class="px-4 py-2">#</th>
+          <th class="px-4 py-2">Customer</th>
+          <th class="px-4 py-2">Type</th>
+          <th class="px-4 py-2">Quantity</th>
+          <th class="px-4 py-2">Pickup Date</th>
+          {%check_user_role request 'Admin,Driver' as allow%}
+            {%if allow%}
+          <th class="px-4 py-2">Status</th>
+          {%endif%}
+          {%check_user_role request 'Admin,User' as allow%}
+          {%if allow%}
+          <th class="px-4 py-2">Actions</th>
+          {%endif%}
+        </tr>
+      </thead>
+      <tbody>
+        {% for garbage in garbages %}
+        <tr class="border-b hover:bg-gray-50">
+          <td class="px-4 py-2">{{ forloop.counter }}</td>
+          <td class="px-4 py-2">{{ garbage.customer.name }}</td>
+          <td class="px-4 py-2">{{ garbage.garbage_type }}</td>
+          <td class="px-4 py-2">{{ garbage.quantity }}</td>
+          <td class="px-4 py-2">{{ garbage.pick_up_date }}</td>
+          {%check_user_role request 'Admin,Driver' as allow%}
+            {%if allow%}
+          <td class="px-2 py-2">
+            <form method="POST" action="{% url 'update_status' garbage.uuid %}">
+                {% csrf_token %}
+                <select name="status">
+                  <option value="Pending" {% if garbage.status == "Pending" %}selected{% endif %}>Pending</option>
+                  <option value="Scheduled" {% if garbage.status == "Scheduled" %}selected{% endif %}>Scheduled</option>
+                  <option value="Collected" {% if garbage.status == "Collected" %}selected{% endif %}>Collected</option>
+                  <option value="Cancelled" {% if garbage.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                </select>
+                <button type="submit">Update</button>
+              </form>
+          </td>
+          {%endif%}{%check_user_role request 'Admin,User' as allow%}
+          {%if allow%}
+          <td class="px-4 py-2">
+            <a href="{% url 'garbage-update' garbage.uuid %}" class="text-blue-600 hover:underline mr-2">Edit</a>
+            {%check_user_role request 'Admin' as allow%}
+            {%if allow%}
+            <a href="{% url 'garbage-delete' garbage.uuid %}" class="text-red-600 hover:underline">Delete</a>
+            {%endif%}
+          </td>
+          {%endif%}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-4 text-gray-500">No entries found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+{% endblock %}

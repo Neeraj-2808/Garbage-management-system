@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pickup Cancelled</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            text-align: center;
+            color: #c0392b;
+            margin-bottom: 20px;
+        }
+        .details {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h2 class="header">Pickup Cancelled</h2>
+
+        <p>Dear {{ name }},</p>
+
+        <p>We're sorry to inform you that your scheduled garbage pickup has been <strong>cancelled</strong>.</p>
+
+        <div class="details">
+            <p><strong>Garbage Type:</strong> {{ garbage_type }}</p>
+            <p><strong>Quantity:</strong> {{ quantity }} kg</p>
+            <p><strong>Pickup Date:</strong> {{ pick_up_date }}</p>
+            <p><strong>Address:</strong> {{ address }}</p>
+            <p><strong>Status:</strong> {{ status }}</p>
+        </div>
+
+        <p><strong>Your payment will be refunded.</strong></p>
+
+        <p>If you believe this was a mistake or need further assistance, please reach out to our support team.</p>
+
+        <div class="footer">
+            <p>Thank you for using our service.<br>The Garbage Management Team</p>
+        </div>
+    </div>
+</body>
+</html>

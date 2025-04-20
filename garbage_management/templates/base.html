@@ -1,3 +1,4 @@
+{%load check_roles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,6 +54,23 @@
 </head>
 <body class="bg-gray-100 text-gray-800 min-h-screen transition duration-300">
 
+<!-- Preloader -->
+<div id="preloader" class="fixed inset-0 bg-white dark:bg-gray-900 flex flex-col items-center justify-center z-50 space-y-4 transition-opacity duration-500 ease-in-out">
+  
+  <!-- Branding Logo -->
+  <div class="h-16 w-16 rounded-full overflow-hidden border border-gray-300">
+    <img src="/static/img/logo.png" alt="Brand Logo" class="h-full w-full object-cover" />
+  </div>
+
+  <!-- Spinner -->
+  <div class="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-green-600"></div>
+
+  <!-- Loading Text -->
+  <p class="text-gray-600 dark:text-gray-300 text-sm font-medium">Loading, please wait... Welcome to Neeraj's Garbage Management System</p>
+</div>
+
+
+
   <!-- Navbar -->
   <header class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow-md">
     <div class="flex items-center text-2xl font-bold">
@@ -61,6 +79,8 @@
     </div>
 
     {% if user.is_authenticated %}
+    {%check_user_role request 'Admin,Driver' as allow%}
+            {%if allow%}
     <ul class="flex items-center space-x-6 text-xl">
 
       <!-- Theme Toggle -->
@@ -80,39 +100,114 @@
           <p class="text-white font-medium hidden md:block">{{ name_of_user }}</p>
         </button>
         <ul id="profileMenu" class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-          <li><a class="block px-4 py-2 text-black hover:bg-gray-100" href="#">Profile</a></li>
+          <!-- <li><a class="block px-4 py-2 text-black hover:bg-gray-100" href="#">Profile</a></li> -->
           <li><a class="block px-4 py-2 text-black hover:bg-gray-100" href="{% url 'settings' %}">Settings</a></li>
           <li><a class="block px-4 py-2 text-black hover:text-red-500 hover:bg-gray-100" href="{% url 'logout' %}">Log out</a></li>
         </ul>
       </li>
     </ul>
     {% endif %}
+    {%check_user_role request 'User' as allow%}
+            {%if allow%}
+    <ul class="flex items-center space-x-6 text-xl">
+
+      <!-- Theme Toggle -->
+      <li>
+        <button onclick="toggleTheme()" class="focus:outline-none text-white text-xl" title="Toggle Theme">
+          <i id="themeIcon" class="fas fa-moon"></i>
+        </button>
+      </li>
+
+      <li><i class="fas fa-search cursor-pointer"></i></li>
+      <li><i class="fas fa-bell cursor-pointer"></i></li>
+
+      <!-- Profile -->
+      <li class="relative">
+        <button onclick="toggleProfileMenu()" class="flex items-center space-x-2 p-2 rounded-full hover:bg-green-600">
+          <img class="w-10 h-10 rounded-full object-cover border-2 border-gray-300" src="/static/img/user2.jpg" alt="User Profile" />
+          <p class="text-white font-medium hidden md:block">{{ customer_name }}</p>
+        </button>
+        <ul id="profileMenu" class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+          <li><a class="block px-4 py-2 text-black hover:bg-gray-100" href="{% url 'home' %}">Profile</a></li>
+          <li><a class="block px-4 py-2 text-black hover:bg-gray-100" href="{% url 'settings' %}">Settings</a></li>
+          <li><a class="block px-4 py-2 text-black hover:text-red-500 hover:bg-gray-100" href="{% url 'logout' %}">Log out</a></li>
+        </ul>
+      </li>
+    </ul>
+    {% endif %}
+    {% endif %}
   </header>
+<!-- Hamburger Menu for Mobile -->
+<button id="hamburgerBtn" class="block md:hidden text-white text-2xl focus:outline-none" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
+
 
   <!-- Wrapper -->
-  <div class="flex flex-col md:flex-row">
+  <!-- <div class="flex flex-col md:flex-row"> -->
+  <div class="flex flex-col md:flex-row min-h-screen">
+
 
     <!-- Sidebar -->
-    <aside class="w-full md:w-64 bg-white shadow-lg p-6 hidden md:block">
+     
+    <!-- <aside class="w-full md:w-64 bg-white shadow-lg p-6 hidden md:block self-start"> -->
+      <!-- above code for aside bar upto content -->
+    <!-- <aside id="mobileSidebar" class="w-full md:w-64 bg-white shadow-lg p-6 hidden md:block md:h-screen"> -->
+    <aside id="mobileSidebar" class="fixed top-0 left-0 w-64 h-screen bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50 md:static md:translate-x-0 p-6">
+
+
       <ul class="space-y-4 text-lg">
-        {% if user.is_authenticated %}
+      {% if user.is_authenticated %}
+        {%check_user_role request 'Admin' as allow%}
+            {%if allow%}
         <li><a href="{%url 'dashboard'%}" class="flex items-center hover:text-green-600"><i class="fas fa-tachometer-alt mr-2"></i>Dashboard</a></li>
+        {% endif %}
+        {%check_user_role request 'User' as allow%}
+          {%if allow%}
+        <li><a href="{%url 'home'%}" class="flex items-center hover:text-green-600"><i class="fas fa-tachometer-alt mr-2"></i>Home</a></li>
+        {% endif %}
+    
+        {%check_user_role request 'Admin' as allow%}
+        {%if allow%}
         <li><a href="{% url 'trucks' %}" class="flex items-center hover:text-green-600"><i class="fas fa-truck mr-2"></i>Trucks</a></li>
         <li><a href="{% url 'drivers' %}" class="flex items-center hover:text-green-600"><i class="fas fa-id-card mr-2"></i>Drivers</a></li>
         <li><a href="{% url 'users' %}" class="flex items-center hover:text-green-600"><i class="fas fa-users mr-2"></i>Customers</a></li>
-        <li><a href="#" class="flex items-center hover:text-green-600"><i class="fas fa-dumpster mr-2"></i>Garbage Collection</a></li>
+        {% endif %}
+        {%check_user_role request 'User' as allow%}
+        {%if allow%}
+        <li><a href="{%url 'garbagesection'%}" class="flex items-center hover:text-green-600"><i class="fas fa-dumpster mr-2"></i>Garbage Collection</a></li>
+        {% endif %}
+        {%check_user_role request 'Admin,Driver' as allow%}
+        {%if allow%}
+        <li><a href="{%url 'garbage-list'%}" class="flex items-center hover:text-green-600"><i class="fas fa-dumpster mr-2"></i>Garbage Collection</a></li>
+        {% endif %}
+      {% endif %}
         <li><a href="{% url 'map' %}" class="flex items-center hover:text-green-600"><i class="fas fa-map-marked-alt mr-2"></i>Map View</a></li>
+        {%check_user_role request 'Admin' as allow%}
+        {%if allow%}
         <li><a href="{% url 'reports' %}" class="flex items-center hover:text-green-600"><i class="fas fa-chart-line mr-2"></i>Reports</a></li>
         {% endif %}
         <li><a href="{% url 'settings' %}" class="flex items-center hover:text-green-600"><i class="fas fa-cogs mr-2"></i>Settings</a></li>
         <li><a href="{% url 'about' %}" class="flex items-center hover:text-green-600"><i class="fas fa-info-circle mr-2"></i>About</a></li>
         <li><a href="{% url 'faq' %}" class="flex items-center hover:text-green-600"><i class="fas fa-question-circle mr-2"></i>FAQ</a></li>
         <li><a href="{% url 'gallery' %}" class="flex items-center hover:text-green-600"><i class="fas fa-images mr-2"></i>Gallery</a></li>
-        {% if user.is_authenticated %}
-        <li><a href="#" class="flex items-center hover:text-green-600"><i class="fas fa-edit mr-2"></i>Complaint Register</a></li>
+    {% if user.is_authenticated %}
+      {%check_user_role request 'User' as allow%}
+        {%if allow%}
+        <li><a href="{%url 'complaint-register'%}" class="flex items-center hover:text-green-600"><i class="fas fa-edit mr-2"></i>Complaint Register</a></li>
         {% endif %}
+        {%check_user_role request 'Admin' as allow%}
+        {%if allow%}
+        <li ><a href="{%url 'complaint'%}" class="flex items-center hover:text-green-600"><i class="fas fa-edit mr-2"></i>Complaints</a></li>
+        {% endif %}
+    {% endif %}
         {% if not user.is_authenticated %}
-        <li><a href="#" class="flex items-center hover:text-green-600"><i class="fas fa-sign-in-alt mr-2"></i>Login</a></li>
+        <li><a href="{% url 'login' %}" class="flex items-center hover:text-green-600"><i class="fas fa-sign-in-alt mr-2"></i>Login</a></li>
+        {% endif %}
+        {%check_user_role request 'Admin,User' as allow%}
+        {%if allow%}
+        <li><a href="{% url 'payment-list' %}" class="flex items-center hover:text-green-600"><i class="fas fa-credit-card mr-2"></i>Payments</a></li>
         {% endif %}
       </ul>
     </aside>
@@ -159,6 +254,33 @@
       }
     };
   </script>
+
+<script>
+  window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    preloader.classList.add('opacity-0');
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 500);
+  });
+</script>
+<script>
+  const sidebar = document.getElementById('mobileSidebar');
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('-translate-x-full');
+  }
+
+  // Close sidebar if clicked outside (on mobile)
+  document.addEventListener('click', function (event) {
+    const isClickInside = sidebar.contains(event.target) || hamburgerBtn.contains(event.target);
+
+    if (!isClickInside && !sidebar.classList.contains('-translate-x-full')) {
+      sidebar.classList.add('-translate-x-full');
+    }
+  });
+</script>
 
 </body>
 </html>

@@ -24,11 +24,11 @@ class Status_Choices(models.TextChoices):
 
 class Garbage(BaseClass):
 
-    user = models.ForeignKey('user.Users',null=True,on_delete=models.SET_NULL)
+    customer = models.ForeignKey('user.Users',null=True,on_delete=models.SET_NULL)
 
     garbage_type = models.CharField(max_length=50,choices=WasteChoices.choices)
     
-    status = models.CharField(max_length=50,choices=Status_Choices.choices)
+    status = models.CharField(max_length=50,choices=Status_Choices.choices,default='Scheduled')
 
     quantity = models.DecimalField(max_digits=6,decimal_places=2)
 

@@ -41,10 +41,10 @@ class LoginView(View):
                 if role in ['Admin']:
                     return redirect ('dashboard')
                 
+                elif role in ['User']:
+                    return redirect('home')
                 elif role in ['Driver']:
-                    return redirect('students-lists')
-                elif role in ['Student']:
-                    return redirect('recordings')
+                    return redirect('garbage-list')
             
             
 

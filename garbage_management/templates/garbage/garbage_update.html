@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="h-full pb-16 overflow-y-auto">
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="container px-6 mx-auto grid">
+            <h2 class="my-6 text-2xl font-semibold text-green-500">
+                Garbage Pickup Request
+            </h2>
+
+            <div class="px-4 py-3 mb-8 bg-[#f5f5f5] rounded-lg shadow-md">
+
+                <!-- Garbage Type -->
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Garbage Type</span><span class="text-red-600">*</span>
+                    {{ form.garbage_type }}
+                    {% if form.garbage_type.errors %}
+                        <span class="text-xs text-red-600">{{ form.garbage_type.errors }}</span>
+                    {% endif %}
+                </label>
+
+                <!-- Status -->
+                <!-- <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Status</span><span class="text-red-600">*</span>
+                    {{ form.status }}
+                    {% if form.status.errors %}
+                        <span class="text-xs text-red-600">{{ form.status.errors }}</span>
+                    {% endif %}
+                </label> -->
+
+                <!-- Quantity -->
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Quantity</span><span class="text-red-600">*</span>
+                    {{ form.quantity }}
+                    {% if form.quantity.errors %}
+                        <span class="text-xs text-red-600">{{ form.quantity.errors }}</span>
+                    {% endif %}
+                </label>
+
+                <!-- Pick-up Date -->
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Pick-up Date</span><span class="text-red-600">*</span>
+                    {{ form.pick_up_date }}
+                    {% if form.pick_up_date.errors %}
+                        <span class="text-xs text-red-600">{{ form.pick_up_date.errors }}</span>
+                    {% endif %}
+                </label>
+
+                <!-- Address -->
+                <label class="block text-sm mt-4">
+                    <span class="text-gray-700">Address</span><span class="text-red-600">*</span>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                        <span class="text-xs text-red-600">{{ form.address.errors }}</span>
+                    {% endif %}
+                </label>
+
+                <!-- Other model fields auto-included (render remaining fields dynamically) -->
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                {% for field in form.visible_fields %}
+                    {% if field.name not in "garbage_type status quantity pick_up_date address" %}
+                        <label class="block text-sm mt-4">
+                            <span class="text-gray-700">{{ field.label }}</span>
+                            {{ field }}
+                            {% if field.errors %}
+                                <span class="text-xs text-red-600">{{ field.errors }}</span>
+                            {% endif %}
+                        </label>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Submit -->
+                <div class="flex justify-end mt-6">
+                    <button type="submit"
+                        class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</main>
+{% endblock %}

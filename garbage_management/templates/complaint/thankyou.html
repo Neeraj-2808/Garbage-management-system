@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex items-center justify-center h-screen bg-gradient-to-r from-green-400 to-blue-500">
+    <div class="bg-white p-10 rounded-lg shadow-xl text-center max-w-lg w-full space-y-6">
+        <div class="text-green-500 text-6xl animate-pulse">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="text-4xl font-semibold text-gray-800">Thank You!</h2>
+        <p class="text-lg text-gray-600">
+            Your submission has been received successfully! We appreciate your feedback and will process it shortly.
+        </p>
+
+        <div class="flex justify-center space-x-4">
+            <a href="{% url 'dashboard' %}" class="bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                Go to Dashboard
+            </a>
+            <a href="{% url 'complaint' %}" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                View Complaints
+            </a>
+        </div>
+
+        <div class="text-gray-500 mt-8">
+            <p>Need assistance? <a href="mailto:crmneeraj2025@gmail.com" class="text-blue-500 hover:underline">Contact Support</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

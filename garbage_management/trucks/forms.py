@@ -12,19 +12,19 @@ class TruckRegisterForm(forms.ModelForm):
         widgets = {
             'truck_number': forms.TextInput(attrs={
                 'class': input_style,
-                'placeholder': 'Enter full name',
+                'placeholder': 'Enter the truck number',
                 'required': 'required'
             }),
 
             'capacity': forms.TextInput(attrs={
                 'class': input_style,
-                'placeholder': 'Enter the psot office',
+                'placeholder': 'Enter the maximum capcity',
                 'required': 'required'
 
             }),
             'current_location': forms.TextInput(attrs={
                 'class': input_style,
-                'placeholder': 'Enter contact number',
+                'placeholder': 'Enter current location',
                 'required': 'required'
             }),
             'active_status': forms.CheckboxInput(attrs={

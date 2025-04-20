@@ -1,145 +1,138 @@
-from django.shortcuts import render,redirect
-
+# payment/views.py
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-
-from .models import Payment,Transactions
-
-# Create your views here.
-from django.shortcuts import render
-
-from django.views import View
-
-import razorpay
-
-from decouple import config
-
 from django.db import transaction
-
-#csrf_exempt
-
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-from django.utils.decorators import method_decorator
+from .models import Payment, Transactions
+from garbage.models import Garbage
+from user.models import Users
 
+import razorpay
+from decouple import config
 import datetime
 
-# Create your views here.
-
-class UserPaymentView(View) :
-
-    def get(self,request,*args,**kwargs) :
-
-        try:
-            
-            payment = Payment.objects.get(student__profile=request.user)
-
-
-        except:
-
-            return render(request,'errorpages/error-404.html')
-        
-        
-        
-        transaction_obj = Transactions.objects.filter(payment=payment,status='Success')
-        
-        order_id = None
-        
-        
-        if transaction_obj.exists():
-            
-            transaction_obj = transaction_obj.first()
-            
-            order_id = transaction_obj.rzp_order_id
-            
-            
-        data = {'payment':payment,'order_id':order_id}
-
-        return render(request,'payments/user-payment-details.html',context=data)
-    
-
+from django.views.generic import ListView, DetailView
+from .models import Payment, Transactions
+from user.models import Users
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .models import Payment
 
 class RazorpayView(View):
+    def get(self, request, uuid):
+        user = Users.objects.get(profile=request.user)
+        garbage = get_object_or_404(Garbage, uuid=uuid, customer=user)
+        payment = get_object_or_404(Payment, garbage=garbage)
 
-    def get(self,request,*args,**kwargs):
+        client = razorpay.Client(auth=(config('RZP_CLIENT_ID'), config('RZP_CLIENT_SECRET')))
+        receipt_id = f"receipt_{str(garbage.uuid)[:32]}"
+        data = {
+            "amount": int(payment.amount * 100),
+            "currency": "INR",
+            "receipt": receipt_id
+        }
 
+        rzp_order = client.order.create(data=data)
+        order_id = rzp_order['id']
 
-        with transaction.atomic():
+        Transactions.objects.create(
+            payment=payment,
+            rzp_order_id=order_id,
+            amount=payment.amount
+        )
 
-            payment_obj = Payment.objects.get(student__profile=request.user)
+        return render(request, 'payments/razorpay-page.html', {
+            'order_id': order_id,
+            'amount': data['amount'],
+            'RZP_CLIENT_ID': config('RZP_CLIENT_ID'),
+            'uuid': uuid
+        })
 
-            amount = payment_obj.amount
-
-            client = razorpay.Client(auth=(config('RZP_CLIENT_ID'),config('RZP_CLIENT_SECRET')))
-
-            data = { "amount": amount*100, "currency": "INR", "receipt": "order_rcptid_11" }
-
-            payment = client.order.create(data=data)
-
-            order_id = payment.get('id')
-
-            amount = payment.get('amount')
-
-            Transactions.objects.create(payment=payment_obj,rzp_order_id=order_id,amount=amount)
-
-            data = {'order_id' : order_id,'amount' : amount,'RZP_CLIENT_ID' :config('RZP_CLIENT_ID') }
-
-            return render(request,'payments/razorpay-page.html',context=data)
-        
-@method_decorator(csrf_exempt,name= 'dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class PaymentVerify(View):
-
-    def post(self,request,*args,**kwargs):
-
-        data=request.POST
-        
+    def post(self, request):
+        data = request.POST
         rzp_order_id = data.get('razorpay_order_id')
-
         rzp_payment_id = data.get('razorpay_payment_id')
-
         rzp_signature = data.get('razorpay_signature')
 
-        transaction_obj = Transactions.objects.get(rzp_order_id=rzp_order_id)
+        transaction = get_object_or_404(Transactions, rzp_order_id=rzp_order_id)
+        transaction.rzp_payment_id = rzp_payment_id
+        transaction.rzp_signature = rzp_signature
 
-        transaction_obj.rzp_payment_id = rzp_payment_id
-
-        transaction_obj.rzp_signature = rzp_signature
-
-        client = razorpay.Client(auth=(config('RZP_CLIENT_ID'),config('RZP_CLIENT_SECRET')))
-
+        client = razorpay.Client(auth=(config('RZP_CLIENT_ID'), config('RZP_CLIENT_SECRET')))
         try:
-
             client.utility.verify_payment_signature({
-            'razorpay_order_id': rzp_order_id,
-            'razorpay_payment_id': rzp_payment_id,
-            'razorpay_signature': rzp_signature})
+                'razorpay_order_id': rzp_order_id,
+                'razorpay_payment_id': rzp_payment_id,
+                'razorpay_signature': rzp_signature
+            })
 
+            transaction.status = 'Success'
+            transaction.transaction_at = datetime.datetime.now()
 
-            transaction_obj.status = 'Success'
+            payment = transaction.payment
+            payment.status = 'Success'
+            payment.paid_at = datetime.datetime.now()
+            payment.save()
 
-            transaction_obj.transaction_at = datetime.datetime.now()
+            transaction.save()
 
-            transaction_obj.payment.status = 'Success'
+            return redirect('payment-details', uuid=payment.garbage.uuid)
 
+        except razorpay.errors.SignatureVerificationError:
+            transaction.status = 'Failed'
+            transaction.transaction_at = datetime.datetime.now()
+            transaction.save()
 
-            transaction_obj.payment.paid_at = datetime.datetime.now()
+            return redirect('payment-details', uuid=transaction.payment.garbage.uuid)
 
-            transaction_obj.payment.save()
+class PaymentDetailView(View):
+    def get(self, request, uuid):
 
-            transaction_obj.save()
+        if request.user.is_superuser:  # Check if the user is an admin
+            # Admin can view payment details for any garbage entry
+            garbage = get_object_or_404(Garbage, uuid=uuid)
+            payment = get_object_or_404(Payment, garbage=garbage)
+            
+        else:
+            user = Users.objects.get(profile=request.user)
+            garbage = get_object_or_404(Garbage, uuid=uuid, customer=user)
+            payment = get_object_or_404(Payment, garbage=garbage)
+           
+           
+        transaction = Transactions.objects.filter(payment=payment).first()
 
-            return redirect('payment-details')
+        return render(request, 'payments/payment-details.html', {
+                'payment': payment,
+                'transaction': transaction,
+        })
     
-        except:
 
-            transaction_obj.status = 'Failed'
+class PaymentListView(View):
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:  # Check if user is admin
+            payments = Payment.objects.all()
+        else:
+            user = Users.objects.get(profile=request.user)
+            payments = Payment.objects.filter(customer=user)  # Regular user can only see their payments
 
-            transaction_obj.transaction_at = datetime.datetime.now()
+        return render(request, 'payments/payment_list.html', {'payments': payments})
 
-            transaction_obj.save()
-
-            return redirect('payment-details')
-
-
-
+# @method_decorator(login_required, name='dispatch')
+# class PaymentDetail(View):
+#     def get(self, request, uuid, *args, **kwargs):
+#         payment = get_object_or_404(Payment, garbage__uuid=uuid)
 
 
+#         transaction = Transactions.objects.filter(payment=payment).last()
+#         context = {
+#             'payment': payment,
+#             'transaction': transaction
+#         }
+#         return render(request, 'payments/payment-details.html', context)

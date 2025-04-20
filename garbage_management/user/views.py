@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 
 from django.views import View
 
@@ -83,10 +83,60 @@ class UserRegistration(View):
 
                 thread.start()
 
-                return redirect('dashboard')
+                return redirect('login')
         else:
 
             data = {'form' : form}
 
-            return render(request,'customer/registration_form.html',context=data)
+            return render(request,'user/registration_form.html',context=data)
+        
+class UserUpdateView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        uuid = kwargs.get('uuid')
+
+        users = get_object_or_404(Users, uuid=uuid)
+
+        form = UserRegisterForm(instance=users)
+
+        return render(request, 'user/user_update.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+
+        uuid = kwargs.get('uuid')
+
+        users = get_object_or_404(Users, uuid=uuid)
+
+        form = UserRegisterForm(request.POST, request.FILES, instance=users)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('users')
+        
+        return render(request, 'user/user_register.html', {'form': form})
+    
+
+class UserDeleteView(View):
+
+    def get(self, request, *args, **kwargs):
+        # Fetch the user by UUID
+        uuid = kwargs.get('uuid')
+        users = get_object_or_404(Users, uuid=uuid,active_status = True)
+        return render(request, 'user/user_delete_confirm.html', {'users': users})
+
+    def post(self, request, *args, **kwargs):
+        # Fetch the users by UUID
+        uuid = kwargs.get('uuid')
+        users = get_object_or_404(Users, uuid=uuid,active_status = True)
+
+        # Delete the users
+        users.active_status = False
+        users.save()
+  # This will now just mark is_deleted = True
+
+        return redirect('users')  # Redirect to the driver list view
+
         
